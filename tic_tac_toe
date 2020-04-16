@@ -1,0 +1,149 @@
+package tictactoe;
+
+import java.util.Scanner;
+import java.lang.Math;
+
+public class Main {
+    
+    public static int x_count = 0;
+    public static int o_count = 0;
+    public static boolean x_won = false; //these have to be static because they are outside of main?
+    public static boolean o_won = false; // this has to be static
+    public static boolean game_is_finished = false;
+    
+    public static void xORo(char[] board, int i){
+        game_is_finished = true;
+        if(board[i] == 'X'){
+            x_won = true;
+            //System.out.println(board[i] + " wins");
+        }
+        if(board[i] == 'O'){
+            o_won = true;
+            //System.out.println(board[i] + " wins");
+        }  
+        
+    }
+    
+    public static void main(String[] args) {        
+        // write your code here
+        char[] board = new char[9];
+        
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+        
+        for(int i = 0; i < input.length(); i++){
+            board[i] = input.charAt(i);           
+        }   
+        
+        System.out.println("---------");
+        
+        int input_position = 0;
+        for(int i = 0; i < 3; i++){
+            System.out.print("| ");
+            for(int j = 0; j < 3; j++){
+                System.out.print(board[j+input_position] + " ");          
+            }
+            input_position += 3; 
+            System.out.println(" |");
+        }
+        
+        System.out.println("---------"); 
+
+        int I;
+        int J;    
+
+        //Get the next Move
+        boolean acceptable_position = false;
+        while(!acceptable_position){
+            System.out.println("Enter the coordinates: ");
+            Scanner nextMove = new Scanner(System.in);    
+            String move = nextMove.nextLine();        
+            String position = move.replaceAll("[^\\d]", "");
+           
+            int i = Integer.parseInt(position.substring(0,1));
+            I = i;
+            int j = Integer.parseInt(position.substring(1));
+            J = j;
+            if(position.matches(".*[1-3].*")){
+                acceptable_position = true;
+                if(j == 1){
+                    J = 3;
+                }
+                if(j == 3){
+                    J = 1;
+                }
+            }     
+            System.out.println("i = " + i + " , j = " + J);
+        }
+        
+        char[][] matrix = new char[3][3];
+        
+        for(int i = 0; i < 3; i++){
+            for(int j = 0; j < 3; j++){
+                matrix[i][j] = board[i+j];
+                System.out.println("matrix[" + (i+1) + "][" + (j+1) + "] = " + matrix[i][j] + "--original");
+                System.out.println("matrix[" + (i+1) + "][" + (j+1) + "] = " + matrix[i][j] + "--edited");
+            }
+        }
+        
+              
+        //check array for results
+        for(int i = 0; i < 9; i++){
+            if(board[i] == 'X'){
+                x_count++;
+                //System.out.println("x_count " + x_count);
+            }
+            if(board[i] == 'O'){
+                o_count++;
+                //System.out.println("o_count " + o_count);
+            }
+            if(i == 8 && (Math.abs(x_count-o_count) > 1)){  
+                System.out.println("Impossible"); 
+                break;
+            }
+
+            //check for row wins.
+            if(i == 0 || i == 3 || i == 6){
+                if(board[i] == board[i+1] && board[i] == board[i+2]){
+                    xORo(board, i);
+                }
+            }
+            //check for column wins
+            if(i == 0 || i == 1 || i == 2){
+                if(board[i] == board[i+3] && board[i] == board[i+6]){
+                    xORo(board, i);
+                } 
+            }
+            //check for first diagonal
+            if(i == 0) {
+                if(board[i] == board[i+4] && board[i] == board[i+8]){
+                    xORo(board, i);
+                }
+            }
+            //check for second diagonal
+            if(i == 2) {
+                if(board[i] == board[i+2] && board[i] == board[i+4]){
+                    xORo(board, i);
+                }                    
+            } 
+            if(x_won && o_won){
+                System.out.println("Impossible");
+                break;
+            } 
+            if(i == 8){
+                if(x_won){
+                    System.out.println("X wins");
+                }
+                if(o_won){
+                    System.out.println("O wins");
+                }
+                if(!x_won && !o_won){
+                    System.out.println("Draw");
+                }
+                if( ( input.contains("_") || input.contains(" ") ) && !game_is_finished){
+                    System.out.println("Game not finished");
+                }                   
+            } 
+        }       
+    }          
+}
